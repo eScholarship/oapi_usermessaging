@@ -1,0 +1,649 @@
+﻿<!--
+  ERB Parameters:
+  first_auth: Authors's first name
+  last_auth: Author's last name
+  group = User's Primary Group Descriptor (e.g. ucb-senate)
+  position = User's position (e.g. Associate Professor)
+  logged_in = Whether a user has logged in ever
+  not_participating = Whether a user has been been determined to be not participating
+  new_pubs: Count of pending OA publications harvested in the last 14 days
+  total_pubs: Count of all OA pending publications
+  need_upload: Count of claimed OA publications requiring upload
+  need_grants: Count of claimed/completed OA publications requiring a grant link
+  pending_titles = Titles of first 2 or fewer pending OA publications
+  upload_titles: Titles of first 2 or fewer OA publications requiring upload
+  grant_titles: Titles of first 2 or fewer OA publications requiring grants
+  pub_plural = (new_pubs==1 ? "publication" : "publications")
+  pub_verb = (new_pubs==1 ? "appears" : "appear")
+  pub_article = (new_pubs==1 ? "This" : "These")
+  pub_article_lower = (new_pubs==1 ? "this" : "these")
+  upload_plural = (need_upload==1 ? "publication" : "publications")
+  is_welcome: include welcome message for new users
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8"> <!-- utf-8 works for most cases -->
+    <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
+    <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+    <title>Your LBNL Publications’ Compliance Status</title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+
+    <!-- CSS Reset : BEGIN -->
+    <style>
+
+        /* What it does: Remove spaces around the email design added by some email clients. */
+        /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
+        html,
+        body {
+            margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        /* What it does: Stops email clients resizing small text. */
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* What it does: Centers email on Android 4.4 */
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+
+        /* What it does: Stops Outlook from adding extra spacing to tables. */
+        table,
+        td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
+        }
+
+        /* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */
+        table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+        }
+        table table table {
+            table-layout: auto;
+        }
+
+        /* What it does: Uses a better rendering method when resizing images in IE. */
+        img {
+            -ms-interpolation-mode:bicubic;
+        }
+
+        /* What it does: A work-around for email clients meddling in triggered links. */
+        *[x-apple-data-detectors],  /* iOS */
+        .x-gmail-data-detectors,    /* Gmail */
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* What it does: Prevents Gmail from displaying a download button on large, non-linked images. */
+        .a6S {
+            display: none !important;
+            opacity: 0.01 !important;
+        }
+        /* If the above doesn't work, add a .g-img class to any image in question. */
+        img.g-img + div {
+            display: none !important;
+        }
+
+        /* What it does: Prevents underlining the button text in Windows 10 */
+        .button-link {
+            text-decoration: none !important;
+        }
+
+        /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
+        /* Create one of these media queries for each additional viewport size you'd like to fix */
+
+        /* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+        @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+            .email-container {
+                min-width: 320px !important;
+            }
+        }
+        /* iPhone 6, 6S, 7, 8, and X */
+        @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+            .email-container {
+                min-width: 375px !important;
+            }
+        }
+        /* iPhone 6+, 7+, and 8+ */
+        @media only screen and (min-device-width: 414px) {
+            .email-container {
+                min-width: 414px !important;
+            }
+        }
+
+    </style>
+    <!-- CSS Reset : END -->
+
+    <!-- Progressive Enhancements : BEGIN -->
+    <style>
+
+    /* What it does: Hover styles for buttons */
+    .button-td,
+    .button-a {
+        transition: all 100ms ease-in;
+    }
+    .button-td:hover,
+    .button-a:hover {
+        background: #555555 !important;
+        border-color: #555555 !important;
+    }
+
+    /* Media Queries */
+    @media screen and (max-width: 600px) {
+
+        /* What it does: Adjust typography on small screens to improve readability */
+        .email-container p {
+            font-size: 16px !important;
+        }
+
+    }
+
+    </style>
+    <!-- Progressive Enhancements : END -->
+
+    <!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
+
+</head>
+<!--
+	The email background color (#222222) is defined in three places:
+	1. body tag: for most email clients
+	2. center tag: for Gmail and Inbox mobile apps and web versions of Gmail, GSuite, Inbox, Yahoo, AOL, Libero, Comcast, freenet, Mail.ru, Orange.fr
+	3. mso conditional: For Windows 10 Mail
+-->
+<body width="100%" bgcolor="#D3D3D3" style="margin: 0; mso-line-height-rule: exactly;">
+  <center style="width: 100%; background: #D3D3D3; text-align: left;">
+    <!--[if mso | IE]>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#D3D3D3">
+    <tr>
+    <td>
+    <![endif]-->
+
+    <!-- Visually Hidden Preheader Text : BEGIN -->
+    <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: Arial, Helvetica, sans-serif;">
+      This email is to update LBNL researchers on actions they must take regarding their scholarly publications.
+    </div>
+    <!-- Visually Hidden Preheader Text : END -->
+
+    <!-- Create white space after the desired preview text so email clients don’t pull other distracting text into the inbox preview. Extend as necessary. -->
+    <!-- Preview Text Spacing Hack : BEGIN -->
+    <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: Arial, Helvetica, sans-serif;">
+      &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+    </div>
+    <!-- Preview Text Spacing Hack : END -->
+
+    <!--
+    Set the email width. Defined in two places:
+    1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
+    2. MSO tags for Desktop Windows Outlook enforce a 600px width.
+  -->
+  <div style="max-width: 600px; margin: auto;" class="email-container">
+    <!--[if mso]>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+    <tr>
+    <td>
+    <![endif]-->
+
+    <!-- Email Body : BEGIN -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
+
+      <!-- Hero Image, Flush : BEGIN -->
+      <tr>
+        <td bgcolor="#D3D3D3" align="center">
+          <img src="https://submit.escholarship.org/ucpms/lbnl/images/lbl_email_header.jpg" alt="" width="" height="" border="0" align="center" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; margin: auto;" class="g-img">
+        </td>
+      </tr>
+      <!-- Hero Image, Flush : END -->
+
+      <!-- 1 Column Text : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+	    <% if is_welcome == true %>
+            <tr>
+              <td style="padding: 20px 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding-top: 10px;">Dear <%= first_name %> <%= last_name %>,</p>		
+                <p style="margin: 0; padding: 15px;">Welcome to the Publication Management System. As Berkeley Lab staff, your research here is covered by the US Department of Energy’s <a href="https://www.energy.gov/sites/prod/files/2014/08/f18/DOE_Public_Access%20Plan_FINAL.pdf">public access plan</a>, which requires you to make scholarly articles you author while employed at UC freely available in <a href="https://escholarship.org">eScholarship</a>, UC's open access repository and publishing platform.</p>                
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0px 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 15px;">The Publication Management System facilitates participation in UC’s Open Access Policies. It searches multiple databases to automatically locate publications you may have authored and sends you periodic email alerts requesting that you review those items and upload manuscripts for display in eScholarship for those publications that are covered by the policy.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0px 30px 20px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 15px;">To maintain compliance with DOE policy, the Berkeley Lab Publication Management System has identified the following actions that require your attention. Please note that only publications resulting from your research here at LBNL are covered by the policy. If you have questions about what is and is not covered, see the resources available at <a href="https://publications.sender.org">publications.sender.org</a>, or contact publications@sender.org</a>.</p>
+              </td>
+            </tr>
+	    <% else %>
+            <tr>
+              <td style="padding: 20px 30px 20px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding-top: 10px;">Dear <%= first_name %> <%= last_name %>,</p>                
+                <!-- Special Paragraph: BEGIN-->
+                <% if not_participating == 'yes' %>
+                	<p style="margin: 0; padding: 5px; border: 1px solid red;">Our logs indicate that neither you nor your publication coordinator (or delegates) have yet to log into the publication management system to manage the published works credited to your name. Please note that compliance with the Berkeley Lab's open access policy is mandatory for all University of California faculty and staff, and lack of compliance may impact future funding for your work and that of your colleagues, as well as the Berkeley Lab's performance under its DOE contract.<br><br>If you are not a researcher and do not publish, you can have your publication management account disabled by emailing <a href="mailto:publications@sender.org">publications@sender.org</a>.</p>
+                <% end %>
+                <!-- Joint Appointee Paragraph: BEGIN-->
+                <% if group =~ /\-lbl\-senate/ %>
+                	<p style="margin: 5px 0 0 0; padding: 5px; border: 1px solid blue;">Note that because you are a Faculty Appointee, you can only log in by clicking on the <%= group.gsub(/\-lbl\-senate/, '').upcase %> button and entering your <%= group.gsub(/\-lbl\-senate/, '').upcase %> credentials (not your Berkeley Lab ones).</p>
+                <% end %>
+                <!-- Joint Appointee Paragraph: END-->
+                <!-- Special Paragraph: END-->
+
+                <p style="margin: 0; padding: 15px;">To maintain compliance with DOE policy, the Berkeley Lab Publication Management System has identified the following actions that require your attention. Please note that only publications resulting from your research here at LBNL are covered by the policy. If you have questions about what is and is not covered, see the resources available at <a href="https://publications.sender.org">publications.sender.org</a>, or contact publications@sender.org</a>.</p>
+              </td>
+            </tr>
+
+	    <% end %>
+            <tr>
+              <td style="padding: 0 30px 10px 30px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;">
+                <hr>
+		<!-- Button : BEGIN -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                  <tr>
+                    <td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
+                      <a href="https://oapolicy.universityofcalifornia.edu/" target="manage-pubs" style="background: #00395A; border: 15px solid #00395A; font-family: sans-serif; font-size: 14px; line-height: 110%; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+                        <span style="color:#ffffff;" class="button-link">&nbsp;&nbsp;&nbsp;&nbsp;Manage Lab Publications&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <!-- Button : END -->
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <!-- 1 Column Text : END -->
+
+      <!-- 2 Even Columns : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff" align="center" height="100%" valign="top" width="100%" style="padding: 0 10px 20px 10px">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" width="100%" style="max-width:560px;">
+            <!-- Uploads Required: BEGIN -->
+            <% if need_upload > 0 %>
+            <tr>
+              <td align="left" valign="top" width="30%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <% if need_upload > 1 %>
+                      <p style="margin: 0;"><b><%= need_upload %> publications<br>require an uploaded manuscript.</b></p>
+                      <% else %>
+                      <p style="margin: 0;"><b><%= need_upload %> publication<br>requires an uploaded manuscript.</b></p>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td align="left" valign="top" width="70%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <p style="margin: 0 0 10px 0;">For open access compliance, claimed publications need an uploaded full-text file (either the author’s final submitted manuscript or the actual published .pdf).</p>
+                      <% if !upload_titles.empty? %>
+                      <p style="margin: 0;">Some of your publications awaiting upload:</p>
+                      <ul>
+                        <li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=1&cid=1" target="manage-pubs"><%= upload_titles.gsub(/ *\|\| */,'</a></li><li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=1&cid=1" target="manage-pubs">') %></a></li>
+                      </ul>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <% end %>
+            <!-- Uploads Required: END -->
+            <!-- Grant Links Required: BEGIN -->
+            <% if need_grants > 0 %>
+            <tr>
+              <td align="left" valign="top" width="30%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <% if need_grants > 1 %>
+                      <p style="margin: 0;"><b><%= need_grants %> publications<br>require funding links.</b></p>
+                      <% else %>
+                      <p style="margin: 0;"><b><%= need_grants %> publication<br>requires funding links.</b></p>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td align="left" valign="top" width="70%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <p style="margin: 0 0 10px 0;">The DOE requires authors to specify which program office funded their work.</p>
+                      <% if !grant_titles.empty? %>
+                      <p style="margin: 0;">Some of your publications not linked to funding:</p>
+                      <ul>
+                        <li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=1&cid=1" target="manage-pubs"><%= grant_titles.gsub(/ *\|\| */,'</a></li><li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=1&cid=1" target="manage-pubs">') %></a></li>
+                      </ul>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <% end %>
+            <!-- Grant Links Required: END -->
+            <!-- Pending Publications: BEGIN -->
+            <% if total_pubs > 0 %>
+            <tr>
+              <td align="left" valign="top" width="30%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <% if total_pubs > 1 %>
+                      <p style="margin: 0;"><b>Approximately <%= total_pubs %> publications<br>await verification.</b></p>
+                      <% else %>
+                      <p style="margin: 0;"><b><%= total_pubs %> publication<br>awaits verification.</b></p>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td align="left" valign="top" width="70%">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                  <tr>
+                    <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                      <p style="margin: 0 0 10px 0;">These publications <i><u>appear</u></i> to be authored or co-authored by you. Please claim your work and reject incorrectly attributed publications.</p>
+                      <% if !pending_titles.empty? %>
+                      <p style="margin: 0;">Some of your publications awaiting verification:</p>
+                      <ul>
+                        <li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=3&cid=1" target="manage-pubs"><%= pending_titles.gsub(/ *\|\| */,'</a></li><li><a href="https://oapolicy.universityofcalifornia.edu/objects.html?as=3&cid=1" target="manage-pubs">') %></a></li>
+                      </ul>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <% end %>
+            <!-- Pending Publications: END -->
+          </table>
+        </td>
+      </tr>
+      <!-- Two Even Columns : END -->
+
+      <!-- 1 Column Text : BEGIN -->
+      <tr>
+        <td bgcolor="#ffffff">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <tr>
+              <td style="padding: 0 30px 10px 30px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;">
+                <!-- Button : BEGIN -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                  <tr>
+                    <td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
+                      <a href="https://oapolicy.universityofcalifornia.edu/" target="manage-pubs" style="background: #00395A; border: 15px solid #00395A; font-family: sans-serif; font-size: 14px; line-height: 110%; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+                        <span style="color:#ffffff;" class="button-link">&nbsp;&nbsp;&nbsp;&nbsp;Manage Lab Publications&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+		<hr>
+                <!-- Button : END -->
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 10px 0 10px 0;">The UC Publication Management System will send you an email every two weeks only if it has found new publications for you to verify and upload to eScholarship. When you receive an email notification:</p>
+				<ul>
+				   <li>Click the link or go directly to <a href="https://oapolicy.universityofcalifornia.edu">oapolicy.universityofcalifornia.edu</a></li>
+				   <li>
+                    <% if group =~ /ucb/%>
+                      Because you are a Faculty Appointee, select UC Berkeley and use your CalNet logon account to access the system.
+                    <% elsif group =~ /ucd/ %>
+                      Because you are a Faculty Appointee, select UC Davis and use your Davis Central Authentication Service account to access the system.
+                    <% elsif group =~ /uci/ %>
+                      Because you are a Faculty Appointee, select UC Irvine and use your UCInetID to access the system.
+                    <% elsif group =~ /ucla/ %>
+                      Because you are a Faculty Appointee, select UCLA and use your UCLA Logon ID to access the system.
+                    <% elsif group =~ /ucm/ %>
+                      Because you are a Faculty Appointee, select UC Merced and use your UCM logon account to access the system.
+                    <% elsif group =~ /ucr/ %>
+                      Because you are a Faculty Appointee, select UC Riverside and use your Riverside logon account to access the system.
+                    <% elsif group =~ /ucsb/ %>
+                      Because you are a Faculty Appointee, select UC Santa Barbara and use your UCSB logon account to access the system.
+                    <% elsif group =~ /ucsc/ %>
+                      Because you are a Faculty Appointee, select UC Santa Cruz and use your UCSC logon account to access the system.
+                    <% elsif group =~ /ucsd/ %>
+                      Because you are a Faculty Appointee, select UC San Diego and use your UCSD logon account to access the system.
+                    <% elsif group =~ /ucsf/ %>
+                      Because you are a Faculty Appointee, select UCSF and use your UCSF logon account to access the system.
+                    <% else %>
+                      Select LBL and use your logon account to access the system.
+                    <% end %>
+				   </li>
+				   <li>Verify which articles were authored by you and upload the manuscript to <a href="https://escholarship.org">eScholarship</a>. In some cases, an open access PDF will already be available to facilitate upload.</li>
+				   <li>Reject any publications which are not yours.</li>
+				   <li>You can also delegate these tasks to someone else. <a href="https://help.oapolicy.universityofcalifornia.edu/support/solutions/articles/9000081984">Consult this FAQ for more information</a>.</li>
+				</ul>
+                </td>
+              </tr>
+        <tr>
+           <td style="padding: 0 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 10px 0 10px 0;">Berkeley Lab staff are available to answer questions and provide assistance with the Open Access Policy as well as with larger issues of how to broadly disseminate and preserve your published research. Please contact <a href="mailto:publications@sender.org">publications@sender.org</a> to reach the Scientific Publications Team. </p>
+          </td>
+        </tr>
+        <tr>
+           <td style="padding: 0 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 10px 0 10px 0;">Note: Our system may find work published by this author before they joined the Berkeley Lab, or that they published under the auspices of another organization. Such work is not subject to Berkeley Lab OA requirements, so you do not need to deposit it. We recommend claiming these works so your CV will be complete and letting us know which works these are so you will not receive future notifications to deposit. Please contact <a href="mailto:publications@sender.org">publications@sender.org</a> to report published works that are not subject to Berkeley Lab OA requirements.</p>
+          </td>
+        </tr>
+        <tr>
+           <td style="padding: 0 30px 10px 30px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555;">
+                <p style="margin: 0; padding: 0 0 10px 0;">Sincerely,</p>
+                <p style="margin: 0; padding: 0 0 20px 0;"><a href="mailto:publications@sender.org">LBNL Scientific Publications Team</a></p>
+                <p style="margin: 0; padding: 0 0 20px 0; font-size: 13px; line-height: 110%;"><i>If you have questions, concerns, or need assistance, please contact
+                  <a href="mailto:publications@sender.org">publications@sender.org</a>. Learn more about the system and its requirements at:
+                  <a href="http://publications.sender.org">http://publications.sender.org/</a></i></p>
+                  <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td width="20%">
+                        <img src="https://submit.escholarship.org/ucpms/lbnl/images/seal-DOE-and-UC.png" width="" height="30" alt="uc and doe seals" border="0" align="center">
+                      </td>
+                      <td width="80%" style="font-size: 13px; line-height: 110%;">
+                        A U.S. Department of Energy National Laboratory<br>Managed by the University of California
+                      </td>
+                    </tr>
+                  </table>
+          </td>
+        </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- 1 Column Text : END -->
+
+        <!-- Clear Spacer : BEGIN -->
+        <tr>
+          <td aria-hidden="true" height="40" style="font-size: 0; line-height: 0;">
+            &nbsp;
+          </td>
+        </tr>
+        <!-- Clear Spacer : END -->
+
+        <!-- FAQ : BEGIN -->
+        <tr>
+          <td bgcolor="#ffffff" align="center" height="100%" valign="top" width="100%" style="padding: 20px 10px 20px 10px">
+            <h2 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 18px; line-height: 125%; color: #333333; font-weight: bold;">LBNL Open Access FAQ: </h2>
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" width="100%" style="max-width:560px;">
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>Why should I do this?</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">It’s part of your job! DOE and Berkeley Lab policy require that all materials published by Berkeley Lab researchers as part of their employment at the Berkeley Lab or produced by using Berkeley Lab resources be submitted to DOE OSTI and made freely available to the public at no charge.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>How do I use the system?</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">Here is a <a href="https://docs.google.com/presentation/d/1ZlfqbhuwN4DUuc4nE21DWtx8jH6ubXWQI6rWTsR2IRQ/edit#slide=id.g208b1e8bdc_0_44">short training deck</a>. We also have <a href="https://commons.sender.org/display/itdivision/Welcome+to+the+Berkeley+Lab+Publications+Website#LBNLPublicationsManagement--744253003">more comprehensive training materials</a>.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>What is the Open Access Policy?</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">LBNL has adopted an <a href="https://commons.sender.org/display/rpm2/Scientific+and+Technical+Publications+Requirements">Open Access Policy</a> in accordance with the <a href="http://energy.gov/downloads/doe-public-access-plan">Department of Energy Public Access Plan</a>. Read our <a href="https://commons.sender.org/display/itdivision/Welcome+to+the+Berkeley+Lab+Publications+Website#LBNLPublicationsManagement-69366">OA FAQ</a> for more information.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>What is the Publication Management System?</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">The LBNL Publication Management System is an automated system administered by the <a href="http://www.cdlib.org/">California Digital Library</a> on behalf of LBNL in order to facilitate compliance with our OA policy. The system finds potentially relevant publications, presents them to authors for verification, stores bibliographic data and open access publications, and forwards them to OSI as required.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>I need technical help.</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">We suggest you start with your <a href="https://commons.sender.org/display/itdivision/Welcome+to+the+Berkeley+Lab+Publications+Website#LBNLPublicationsManagement--993556181">division publication coordinator</a>. If that person is unavailable, submit a help request or <a href="mailto:publications@sender.org">contact us</a>.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" valign="top" width="30%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;"><b>How do I know this is real?</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="left" valign="top" width="70%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-size: 14px; text-align: left;">
+                    <tr>
+                      <td style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 140%; color: #555555; padding: 10px 10px 0;">
+                        <p style="margin: 0;">You can verify the authenticity of this message by noting that links here only go to sender.org, doe.gov, and universityofcalifornia.edu websites. You can also view this <a href="http://today.sender.org/2017/04/21/new-publication-requirements-system-launching-this-month/">Today at Berkeley Lab article</a> about the launch of the system.	</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- FAQ : END -->
+
+        <!-- Clear Spacer : BEGIN -->
+        <tr>
+          <td aria-hidden="true" height="40" style="font-size: 0; line-height: 0;">
+            &nbsp;
+          </td>
+        </tr>
+        <!-- Clear Spacer : END -->
+
+      </table>
+      <!-- Email Body : END -->
+
+      <!--[if mso]>
+    </td>
+  </tr>
+</table>
+<![endif]-->
+</div>
+
+<!--[if mso | IE]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</center>
+</body>
+</html>
