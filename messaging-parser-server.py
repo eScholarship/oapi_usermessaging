@@ -2,20 +2,87 @@
 # CAMPUS MESSAGING LOG PARSER
 #
 # Given a directory as an input
-# This script locates all the .log files
-# TK Checks them agains the log files already in the database.
-# New log files are processed
-# and an output .sql file is produced with inserts into 
-# UCOPRerports.[Message Files] and UCOPRerports.[Messages]
+# local the .log files in that directory
+# compare them with the files already in UCOPReports.[Message Files]
+# process the new files
+# output an .sql file, with inserts for
+# UCOPReports.[Message Files] and UCOPReports.[Messages]
 #--------------------------
 
 import glob
 import sys
+import os
 from datetime import datetime
 
+# _scproxy required to run pymssql locally (bug fix)
+import _scproxy
+import pymssql
+
+# Get the current working directory
+script_dir = os.getcwd()
+print("Current working directory: {0}".format(script_dir))
+
 # Directory in which to look for log files
+# Move to the supplied directory
 message_file_directory = sys.argv[1]
 print("\nProcessing files in:" + message_file_directory)
+os.chdir(message_file_directory)
+
+# Gets all the log files in the folder where the python script is run
+print("Log files found: ", glob.glob("*.log"), "\n") 
+log_file_array = glob.glob("*.log")
+
+
+#-------------------------
+# Queries the db for extant log files
+print("Querying UCOPReports.[Message Files] for extant log files...")
+
+config = {
+	'user':'erin.winter',
+	'password':'K9FtwwMS##N2mYtC',
+	'prod' : {
+		'server':'localhost',
+		'port':'8888',
+		'database':'elements-cdl-prod-reporting'
+	},
+	'qa' : {
+		'server':'localhost',
+		'port':'9999',
+		'database':'elements-cdl-qa-reporting'
+	}
+}
+
+conn = pymssql.connect(
+	server=config['prod']['server'],
+	port=config['prod']['port'],
+	user=config['user'],
+	password=config['password'],
+	database=config['prod']['database'])
+
+cursor = conn.cursor()  
+cursor.execute('SELECT [File Name] FROM UCOPReports.[Message Files]')  
+row = cursor.fetchone()
+
+logs_in_message_files = []
+while row:
+	logs_in_message_files.append(str(row[0]))
+	row = cursor.fetchone()
+
+# Debug query results:
+# print( "Logs in message files:\n", logs_in_message_files)
+print("Query complete.")
+
+# Compare the logs in the directory with the sql query
+log_file_array = list(set(log_file_array).difference(logs_in_message_files))
+print('Remaining logs to process:')
+print(log_file_array)
+
+if len(log_file_array) < 1:
+	print("No log files to process. Exiting.\n")
+	exit()
+
+#-------------------------
+# Process the new log files
 
 # First time var declaration:
 init_declare = False
@@ -23,20 +90,10 @@ init_declare = False
 # Set to true to output email address CSV
 output_csv = False
 
-# Gets all the log files in the folder where the python script is run
-print("Log files found: ", glob.glob(message_file_directory + "/*.log"), "\n") 
-log_file_array = glob.glob(message_file_directory + "/*.log")
+# Create the new SQL file in the original script's directory
+sql_file = open (script_dir + "/Test" + "-insert.sql", "a")
 
-# TK TK TK check UCOPReports.[Message Files] for contents of log_file_array.
-# Return only the array members which are not in the 
-
-if len(log_file_array) < 1:
-	print("No log files found. Exiting.\n")
-	exit()
-
-
-sql_file = open ("Test" + "-insert.sql", "a")
-
+# Loop through the log files and create the SQL inert code
 for log_file in log_file_array:
 	fname = log_file
 
