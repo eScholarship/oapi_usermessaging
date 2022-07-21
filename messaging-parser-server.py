@@ -38,8 +38,8 @@ log_file_array = glob.glob("*.log")
 print("Querying UCOPReports.[Message Files] for extant log files...")
 
 config = {
-	'user':'erin.winter',
-	'password':'K9FtwwMS##N2mYtC',
+	'user':'xxxxx',
+	'password':'xxxxx',
 	'prod' : {
 		'server':'localhost',
 		'port':'8888',
