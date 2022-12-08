@@ -21,44 +21,6 @@ import pymssql
 #===============================
 # Server configs
 
-local_config = {
-	'prod' : {
-		'user':'erin.winter',
-		'password':'K9FtwwMS##N2mYtC',
-		'server':'localhost',
-		'port':'8888',
-		'database':'elements-cdl-prod-reporting'
-	},
-	'qa' : {
-		'user':'erin.winter',
-		'password':'MS9P8bWgt%xJKczn',
-		'server':'localhost',
-		'port':'9999',
-		'database':'elements-cdl-qa-reporting'
-	}
-}
-
-server_config = {
-    'prod' : {
-		'user':'erin.winter',
-		'password':'K9FtwwMS##N2mYtC',
-        'server':'oapolicy.universityofcalifornia.edu',
-        'port':'1433',
-        'database':'elements-cdl-prod-reporting'
-    },
-    'qa' : {
-		'user':'erin.winter',
-		'password':'MS9P8bWgt%xJKczn',
-        'server':'qa-oapolicy.universityofcalifornia.edu',
-        'port':'1433',
-        'database':'elements-cdl-qa-reporting'
-    }
-}
-
-# Select the active config
-active_config = server_config['qa']
-
-
 
 #===============================
 # Main program
